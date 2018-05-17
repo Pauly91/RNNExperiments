@@ -60,6 +60,7 @@ for current_input in inputs_series:
     current_state = next_state
 
 logits_series = [tf.matmul(state, W2) + b2 for state in states_series] #Broadcasted addition [5,4] * [4,2] + [1,2] = [5,2]
+
 predictions_series = [tf.nn.softmax(logits) for logits in logits_series]
 
 losses = [tf.nn.sparse_softmax_cross_entropy_with_logits(logits, labels) for logits, labels in zip(logits_series,labels_series)]
