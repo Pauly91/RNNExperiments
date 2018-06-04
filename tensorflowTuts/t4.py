@@ -54,7 +54,7 @@ def featurize(text):
     # for the output.
 
     # There should be a better way of representing other than 1 hot 
-    # vectors
+    # vectors - WordVec way of doing things ?
 
 
     for i , each in enumerate(input_chars):
@@ -67,9 +67,21 @@ def rnn(x, weight, bias, len_unique_chars):
     '''
      define rnn cell and prediction
     '''
-    x = tf.transpose(x, [1, 0, 2])
-    x = tf.reshape(x, [-1, len_unique_chars])
-    x = tf.split(x, max_len, 0)
+
+    # Perm defines the order in which the axis are arranged, i.e [x,y,z] = [1,0,2] = > [y,x,z] 
+    #  
+    x = tf.transpose(x, [1, 0, 2]) # 2nd argument is perm:permutation 
+    x = tf.reshape(x, [-1, len_unique_chars]) # -1 here refers to the none dimension in intial data
+    x = tf.split(x, max_len, 0) # This split the data into sub-tensor of size max_len along x axis.
+
+
+    '''
+    Blogs to read in BasicLSTMCell
+    - https://jasdeep06.github.io/posts/Understanding-LSTM-in-Tensorflow-MNIST/
+    - https://medium.com/machine-learning-algorithms/build-basic-rnn-cell-with-static-rnn-707f41d31ee1
+
+
+    '''
 
     cell = tf.contrib.rnn.BasicLSTMCell(num_units, forget_bias=1.0)
     outputs, states = tf.contrib.rnn.static_rnn(cell, x, dtype=tf.float32)
@@ -89,12 +101,25 @@ def run(train_data, target_data, unique_chars, len_unique_chars):
     '''
      main run function
     '''
-    x = tf.placeholder("float", [None, max_len, len_unique_chars])
-    y = tf.placeholder("float", [None, len_unique_chars])
-    weight = tf.Variable(tf.random_normal([num_units, len_unique_chars]))
-    bias = tf.Variable(tf.random_normal([len_unique_chars]))
+    '''
+    Hyper parameters:
+    max_len = 40
+    step = 2
+    num_units = 128
+    learning_rate = 0.001
+    batch_size = 200
+    epoch = 60
+    temperature = 0.5
+    '''
+
+
+    x = tf.placeholder("float", [None, max_len, len_unique_chars]) # [ * , 40, one_hot_vector_length]
+    y = tf.placeholder("float", [None, len_unique_chars]) # [ *, one_hot_vector_length
+    weight = tf.Variable(tf.random_normal([num_units, len_unique_chars])) # 128,one_hot_vector_length
+    bias = tf.Variable(tf.random_normal([len_unique_chars])) # one_hot_vector_length
 
     prediction = rnn(x, weight, bias, len_unique_chars)
+
     softmax = tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y)
     cost = tf.reduce_mean(softmax)
     optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate).minimize(cost)
@@ -142,4 +167,4 @@ if __name__ == "__main__":
     #get data from https://s3.amazonaws.com/text-datasets/nietzsche.txt
     text = read_data('/mathworks/home/abelbabu/pythonScripts/RNNExperiments/tensorflowTuts/nietzsche.txt')
     train_data, target_data, unique_chars, len_unique_chars = featurize(text)
-    #run(train_data, target_data, unique_chars, len_unique_chars)
+    run(train_data, target_data, unique_chars, len_unique_chars)
