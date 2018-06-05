@@ -80,10 +80,20 @@ def rnn(x, weight, bias, len_unique_chars):
     - https://jasdeep06.github.io/posts/Understanding-LSTM-in-Tensorflow-MNIST/
     - https://medium.com/machine-learning-algorithms/build-basic-rnn-cell-with-static-rnn-707f41d31ee1
 
+    LSTM walk through: http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+
 
     '''
+    # num_units in BAsicLSTMCell is the number of LSTM units, so cell is a like container for LSTM units
+    # Read the LSTM walk through to get the picture of LSTM
 
     cell = tf.contrib.rnn.BasicLSTMCell(num_units, forget_bias=1.0)
+    
+    # Static RNN is the high level function that creates a RNN by taking the cell and the inputs.
+    # My best understanding is that stat_rnn function should take the cells and make it recurrent.
+    # Understand how tensor implements RNN: Feedbacks etc
+    
+    
     outputs, states = tf.contrib.rnn.static_rnn(cell, x, dtype=tf.float32)
     prediction = tf.matmul(outputs[-1], weight) + bias
     return prediction
