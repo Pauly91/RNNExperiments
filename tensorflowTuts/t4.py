@@ -92,6 +92,9 @@ def rnn(x, weight, bias, len_unique_chars):
     # Static RNN is the high level function that creates a RNN by taking the cell and the inputs.
     # My best understanding is that stat_rnn function should take the cells and make it recurrent.
     # Understand how tensor implements RNN: Feedbacks etc
+
+    # This tutorial : http://adventuresinmachinelearning.com/recurrent-neural-networks-lstm-tutorial-tensorflow/
+    # The above tutorial should solve the problem.
     
     
     outputs, states = tf.contrib.rnn.static_rnn(cell, x, dtype=tf.float32)
