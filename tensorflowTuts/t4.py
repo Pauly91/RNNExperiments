@@ -96,6 +96,19 @@ def rnn(x, weight, bias, len_unique_chars):
     # This tutorial : http://adventuresinmachinelearning.com/recurrent-neural-networks-lstm-tutorial-tensorflow/
     # The above tutorial should solve the problem.
     
+
+
+    '''
+    Types of arrangement of data:
+    - Batch Major
+    - Time 
+    
+    My thoughts:
+
+    The num of unit to LSTM is the hidden units for the hidden layer in a cell
+
+    the rnn.static would then define the input layer depending on the dimension of data .  
+    '''
     
     outputs, states = tf.contrib.rnn.static_rnn(cell, x, dtype=tf.float32)
     prediction = tf.matmul(outputs[-1], weight) + bias
