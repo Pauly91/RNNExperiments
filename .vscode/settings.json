@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "/home/abelbabu/anaconda3/bin/python",
-    "window.openFoldersInNewWindow": "on"
+    "window.openFoldersInNewWindow": "on",
+    "python.formatting.provider": "yapf"
 }
